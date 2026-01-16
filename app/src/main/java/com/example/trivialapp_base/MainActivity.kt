@@ -42,10 +42,12 @@ class MainActivity : ComponentActivity() {
                 Navigation(gameViewModel)
 
                 // Definición de rutas y navegación
+
+                }
+
             }
         }
     }
-}
 @Composable
 fun Navigation(viewModel: GameViewModel){
     val navigationController = rememberNavController()
