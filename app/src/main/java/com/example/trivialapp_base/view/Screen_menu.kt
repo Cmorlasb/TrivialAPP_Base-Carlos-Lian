@@ -27,7 +27,12 @@ fun MenuScreen(navController: NavHostController, viewModel: GameViewModel) {
         Row {
             Button(onClick = { viewModel.setDificultad("Facil") }) { Text("Fácil") }
             Spacer(modifier = Modifier.width(16.dp))
+            Button(onClick = { viewModel.setDificultad("Medio") }) { Text("Medio") }
+            Spacer(modifier = Modifier.width(16.dp))
             Button(onClick = { viewModel.setDificultad("Dificil") }) { Text("Difícil") }
+            Spacer(modifier = Modifier.width(16.dp))
+            Button(onClick = { viewModel.setDificultad("Custom") }) { Text("Custom") }
+
         }
 
         Spacer(modifier = Modifier.height(30.dp))
