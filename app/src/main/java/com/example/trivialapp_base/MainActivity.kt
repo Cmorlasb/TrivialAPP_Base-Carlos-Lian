@@ -4,14 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.activity.viewModels
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.trivialapp_base.ui.theme.TrivialAPP_BaseTheme
+import com.example.trivialapp_base.view.*
+import com.example.trivialapp_base.viewmodel.GameViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,18 +18,31 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TrivialAPP_BaseTheme {
-                // Controlador de navegación
+                // 1. Crear controlador y ViewModel
+                val navigationController = rememberNavController()
+                val gameViewModel: GameViewModel by viewModels()
 
+                // 2. NavHost. Fíjate que Routes.Menu ahora funciona porque actualizamos Routes.kt
+                NavHost(
+                    navController = navigationController,
+                    startDestination = Routes.Splash.route
+                ) {
+                    composable(Routes.Splash.route) {
+                        SplashScreen(navigationController)
+                    }
 
+                    composable(Routes.Menu.route) {
+                        MenuScreen(navigationController, gameViewModel)
+                    }
 
-                // Instanciamos el ViewModel una vez
+                    composable(Routes.Game.route) {
+                        GameScreen(navigationController, gameViewModel)
+                    }
 
-
-
-                // Definición de rutas y navegación
-
-
-
+                    composable(Routes.Score.route) {
+                        ResultScreen(navigationController, gameViewModel)
+                    }
+                }
             }
         }
     }
