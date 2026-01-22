@@ -1,10 +1,14 @@
 package com.example.trivialapp_base.view
 
+import android.R
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.fromColorLong
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -15,11 +19,9 @@ import com.example.trivialapp_base.viewmodel.GameViewModel
 fun GameScreen(navController: NavHostController, viewModel: GameViewModel) {
     val pregunta = viewModel.preguntaActual
 
-    // Si el juego termina, navegamos al Score
     if (viewModel.juegoTerminado) {
         LaunchedEffect(Unit) {
             navController.navigate(Routes.Score.route) {
-                // Evita volver atrás a la pregunta
                 popUpTo(Routes.Menu.route) { inclusive = false }
             }
         }
@@ -29,8 +31,8 @@ fun GameScreen(navController: NavHostController, viewModel: GameViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally, // Alineación Horizontal
-        verticalArrangement = Arrangement.Center            // Disposición Vertical (CORREGIDO)
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Text("Puntos: ${viewModel.puntuacion}", fontSize = 20.sp)
 

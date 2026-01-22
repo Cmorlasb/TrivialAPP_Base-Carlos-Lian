@@ -1,5 +1,6 @@
 package com.example.trivialapp_base.view
 
+import android.text.style.BackgroundColorSpan
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -31,7 +32,8 @@ fun MenuScreen(navController: NavHostController, viewModel: GameViewModel) {
             Spacer(modifier = Modifier.width(16.dp))
             Button(onClick = { viewModel.setDificultad("Dificil") }) { Text("Difícil") }
             Spacer(modifier = Modifier.width(16.dp))
-            Button(onClick = { viewModel.setDificultad("Custom") }) { Text("Custom") }
+
+            Button(onClick = { viewModel.setDificultad("Custom") }) { Text("Custom")}
 
         }
 
@@ -44,7 +46,7 @@ fun MenuScreen(navController: NavHostController, viewModel: GameViewModel) {
             },
             modifier = Modifier.fillMaxWidth(0.6f)
         ) {
-            Text("JUGAR")
+            Text("Empezar Juego")
         }
     }
 }

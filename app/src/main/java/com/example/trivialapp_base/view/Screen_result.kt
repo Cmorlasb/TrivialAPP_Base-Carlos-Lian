@@ -31,7 +31,6 @@ fun ResultScreen(navController: NavHostController, viewModel: GameViewModel) {
         Spacer(modifier = Modifier.height(40.dp))
 
         Button(onClick = {
-            // Vuelve al menú y limpia la pila de navegación
             navController.navigate(Routes.Menu.route) {
                 popUpTo(Routes.Menu.route) { inclusive = true }
             }

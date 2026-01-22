@@ -25,7 +25,7 @@ object ProveedorPreguntas {
             Pregunta("¿Autor del Quijote?", "Literatura", "Facil", "Cervantes", "Quevedo", "Lope", "Góngora", "Cervantes"),
             Pregunta("¿Velocidad de la luz?", "Física", "Dificil", "300.000 km/s", "150.000 km/s", "1000 km/s", "Mach 1", "300.000 km/s"),
             Pregunta("¿Moneda de Japón?", "Economía", "Medio", "Yuan", "Won", "Yen", "Dólar", "Yen"),
-            Pregunta("¿Que animal posee la moyer fuerza de mordida del reino animal y que ha sido medido?", "Animal", "Custom", "Cocodrilo de agua salada", "Tiburón blanco", "Orcas", "Tortuga caiman", "Cocodrilo de agua salada"),
+            Pregunta("¿Que animal posee la mayor fuerza de mordida del reino animal y que ha sido medido?", "Animal", "Custom", "Cocodrilo de agua salada", "Tiburón blanco", "Orcas", "Tortuga caiman", "Cocodrilo de agua salada"),
             Pregunta("¿Rey de los dioses griegos?", "Mitología", "Facil", "Zeus", "Hades", "Poseidón", "Ares", "Zeus"),
             Pregunta("¿Hueso más largo del cuerpo?", "Anatomía", "Medio", "Fémur", "Tibia", "Húmero", "Radio", "Fémur"),
             Pregunta("¿Cuando comenzó la primera y segunda guerra mundial?", "Historia", "Custom,", "1915 y 1938", "1920 y 1945", "1918 y 1940", "1914 y 1939", "1914 y 1939"),

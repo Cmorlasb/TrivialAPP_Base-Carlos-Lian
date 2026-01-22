@@ -22,30 +22,29 @@ fun SplashScreen(navController: NavHostController) {
     LaunchedEffect(key1 = true) {
         delay(2000)
         navController.popBackStack()
-        // IMPORTANTE: Navega a la ruta con mayúscula definida en Routes.kt
         navController.navigate(Routes.Menu.route)
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary),
+            .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            // Asegúrate de que existe R.drawable.logotriviapp
-            // Si no tienes logo aún, comenta estas líneas de Image
+
             Image(
                 painter = painterResource(id = R.drawable.logotriviapp),
                 contentDescription = "Logo",
-                modifier = Modifier.size(200.dp)
+                modifier = Modifier.size(500.dp)
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = "Trivia App",
-                color = Color.White,
+                color = Color.Red,
                 style = MaterialTheme.typography.headlineMedium
             )
+
         }
     }
 }
