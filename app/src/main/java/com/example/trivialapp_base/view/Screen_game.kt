@@ -1,23 +1,23 @@
 package com.example.trivialapp_base.view
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.trivialapp_base.Routes
 import com.example.trivialapp_base.viewmodel.GameViewModel
@@ -26,51 +26,137 @@ import com.example.trivialapp_base.viewmodel.GameViewModel
 fun GameScreen(navController: NavHostController, viewModel: GameViewModel) {
     val pregunta = viewModel.preguntaActual
 
-    // Si el juego termina, navegamos al Score
     if (viewModel.juegoTerminado) {
         LaunchedEffect(Unit) {
             navController.navigate(Routes.Screen_result.route) {
-                // Evita volver atrás a la pregunta
                 popUpTo(Routes.Screen_menu.route) { inclusive = false }
             }
         }
     }
 
-    Column(
+    val progresoAnimado by animateFloatAsState(
+        targetValue = viewModel.tiempoRestante / 100f,
+        label = "ProgressAnimation"
+    )
+
+    val SoftBlue = Color(0xFFE3F2FD)
+    val SoftPurple = Color(0xFFEDE7F6)
+    val AccentColor = Color(0xFF7E57C2)
+    val TimerColor = Color(0xFF26A69A)
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally, // Alineación Horizontal
-        verticalArrangement = Arrangement.Center            // Disposición Vertical (CORREGIDO)
-    ) {
-        Text("Puntos: ${viewModel.puntuacion}", fontSize = 20.sp)
-
-        LinearProgressIndicator(
-            progress = { viewModel.tiempoRestante / 100f },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp)
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        if (pregunta != null) {
-            Text(
-                text = pregunta.pregunta,
-                fontSize = 22.sp,
-                modifier = Modifier.padding(bottom = 20.dp)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(SoftBlue, SoftPurple)
+                )
             )
+            .statusBarsPadding()
+            .padding(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
 
-            viewModel.respuestasMezcladas.forEach { res ->
-                Button(
-                    onClick = { viewModel.responder(res) },
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+            Spacer(modifier = Modifier.height(20.dp))
 
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Surface(
+                    shape = CircleShape,
+                    color = Color.White,
+                    shadowElevation = 4.dp,
+                    modifier = Modifier.padding(bottom = 16.dp)
                 ) {
-                    Text(res)
+                    Text(
+                        text = "Puntos: ${viewModel.puntuacion}",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = AccentColor,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 10.dp)
+                    )
+                }
+
+                LinearProgressIndicator(
+                    progress = { progresoAnimado },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(12.dp)
+                        .clip(RoundedCornerShape(50)),
+                    color = if (progresoAnimado < 0.3f) Color(0xFFEF5350) else TimerColor,
+                    trackColor = Color.White.copy(alpha = 0.5f),
+                )
+            }
+
+            if (pregunta != null) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 20.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Pregunta ${viewModel.indicePreguntaActual + 1}",
+                            fontSize = 14.sp,
+                            color = Color.Gray,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Text(
+                            text = pregunta.pregunta,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            lineHeight = 30.sp,
+                            color = Color(0xFF37474F)
+                        )
+                    }
+                }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    viewModel.respuestasMezcladas.forEach { res ->
+                        Button(
+                            onClick = { viewModel.responder(res) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = AccentColor
+                            ),
+                            shape = RoundedCornerShape(16.dp),
+                            elevation = ButtonDefaults.buttonElevation(
+                                defaultElevation = 4.dp,
+                                pressedElevation = 1.dp
+                            )
+                        ) {
+                            Text(
+                                text = res,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(40.dp))
+                }
+
+            } else {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = AccentColor)
                 }
             }
-        } else {
-            CircularProgressIndicator()
         }
     }
 }
-
