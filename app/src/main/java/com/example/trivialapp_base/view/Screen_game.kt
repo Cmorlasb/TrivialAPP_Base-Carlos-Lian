@@ -1,13 +1,23 @@
 package com.example.trivialapp_base.view
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.trivialapp_base.Routes
 import com.example.trivialapp_base.viewmodel.GameViewModel
@@ -16,10 +26,12 @@ import com.example.trivialapp_base.viewmodel.GameViewModel
 fun GameScreen(navController: NavHostController, viewModel: GameViewModel) {
     val pregunta = viewModel.preguntaActual
 
+    // Si el juego termina, navegamos al Score
     if (viewModel.juegoTerminado) {
         LaunchedEffect(Unit) {
-            navController.navigate(Routes.Score.route) {
-                popUpTo(Routes.Menu.route) { inclusive = false }
+            navController.navigate(Routes.Screen_result.route) {
+                // Evita volver atrás a la pregunta
+                popUpTo(Routes.Screen_menu.route) { inclusive = false }
             }
         }
     }
@@ -28,8 +40,8 @@ fun GameScreen(navController: NavHostController, viewModel: GameViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        horizontalAlignment = Alignment.CenterHorizontally, // Alineación Horizontal
+        verticalArrangement = Arrangement.Center            // Disposición Vertical (CORREGIDO)
     ) {
         Text("Puntos: ${viewModel.puntuacion}", fontSize = 20.sp)
 
@@ -51,6 +63,7 @@ fun GameScreen(navController: NavHostController, viewModel: GameViewModel) {
                 Button(
                     onClick = { viewModel.responder(res) },
                     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+
                 ) {
                     Text(res)
                 }

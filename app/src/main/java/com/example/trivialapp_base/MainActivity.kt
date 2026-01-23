@@ -5,11 +5,28 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.Navigation
+import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.trivialapp_base.ui.theme.TrivialAPP_BaseTheme
-import com.example.trivialapp_base.view.*
+import com.example.trivialapp_base.view.GameScreen
+import com.example.trivialapp_base.view.MenuScreen
+import com.example.trivialapp_base.view.ResultScreen
+import com.example.trivialapp_base.view.SplashScreen
 import com.example.trivialapp_base.viewmodel.GameViewModel
 
 class MainActivity : ComponentActivity() {
@@ -18,32 +35,43 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TrivialAPP_BaseTheme {
-                // 1. Crear controlador y ViewModel
-                val navigationController = rememberNavController()
+                // Controlador de navegación
                 val gameViewModel: GameViewModel by viewModels()
 
-                // 2. NavHost. Fíjate que Routes.Menu ahora funciona porque actualizamos Routes.kt
-                NavHost(
-                    navController = navigationController,
-                    startDestination = Routes.Splash.route
-                ) {
-                    composable(Routes.Splash.route) {
-                        SplashScreen(navigationController)
-                    }
+                // Instanciamos el ViewModel una vez
+                Navigation(gameViewModel)
 
-                    composable(Routes.Menu.route) {
-                        MenuScreen(navigationController, gameViewModel)
-                    }
+                // Definición de rutas y navegación
 
-                    composable(Routes.Game.route) {
-                        GameScreen(navigationController, gameViewModel)
-                    }
-
-                    composable(Routes.Score.route) {
-                        ResultScreen(navigationController, gameViewModel)
-                    }
-                }
             }
+
+        }
+    }
+}
+@Composable
+fun Navigation(viewModel: GameViewModel) {
+
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = Routes.Screen_menu.route
+    ) {
+
+        composable(Routes.Screen_splash.route) {
+            SplashScreen(navController)
+        }
+
+        composable(Routes.Screen_menu.route) {
+            MenuScreen(navController, viewModel)
+        }
+
+        composable(Routes.Screen_game.route) {
+            GameScreen(navController, viewModel)
+        }
+
+        composable(Routes.Screen_result.route) {
+            ResultScreen(navController, viewModel)
         }
     }
 }
