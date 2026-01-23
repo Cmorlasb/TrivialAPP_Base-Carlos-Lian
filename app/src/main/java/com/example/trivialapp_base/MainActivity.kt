@@ -49,15 +49,29 @@ class MainActivity : ComponentActivity() {
         }
     }
 @Composable
-fun Navigation(viewModel: GameViewModel){
-    val navigationController = rememberNavController()
+fun Navigation(viewModel: GameViewModel) {
+
+    val navController = rememberNavController()
+
     NavHost(
-        navController = navigationController,
-        startDestination = Routes.Screen_splash.route
+        navController = navController,
+        startDestination = Routes.Screen_menu.route
     ) {
-        composable(Routes.Screen_splash.route) { SplashScreen(navigationController) }
-        composable(Routes.Screen_menu.route) { MenuScreen(navigationController, viewModel) }
-        composable(Routes.Screen_game.route) { GameScreen(navigationController, viewModel) }
-        composable(Routes.Screen_result.route) { ResultScreen(navigationController, viewModel) }
+
+        composable(Routes.Screen_splash.route) {
+            SplashScreen(navController)
+        }
+
+        composable(Routes.Screen_menu.route) {
+            MenuScreen(navController, viewModel)
+        }
+
+        composable(Routes.Screen_game.route) {
+            GameScreen(navController, viewModel)
+        }
+
+        composable(Routes.Screen_result.route) {
+            ResultScreen(navController, viewModel)
+        }
     }
 }
