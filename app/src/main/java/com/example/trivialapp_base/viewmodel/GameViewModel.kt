@@ -1,17 +1,13 @@
 package com.example.trivialapp_base.viewmodel
 
 import android.os.CountDownTimer
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import com.example.trivialapp_base.model.Pregunta
 import com.example.trivialapp_base.model.ProveedorPreguntas
 
-
 class GameViewModel : ViewModel() {
+    private var preguntasPartida: List<Pregunta> = emptyList()
 
     var indicePreguntaActual by mutableIntStateOf(0)
     var preguntaActual by mutableStateOf<Pregunta?>(null)
@@ -19,48 +15,48 @@ class GameViewModel : ViewModel() {
     var puntuacion by mutableIntStateOf(0)
     var tiempoRestante by mutableFloatStateOf(100f)
     var juegoTerminado by mutableStateOf(false)
-    var dificultadSeleccionada by mutableStateOf("Facil")
 
-    // Eliminamos 'dificultadSeleccionada' si la idea es siempre jugar el mix de 30 preguntas.
-    // Si quisieras modos separados, habría que cambiar la lógica, pero para el mix 10-10-10:
+    // --- NUEVO: Variables para Categoría y Dificultad ---
+    var dificultadSeleccionada by mutableStateOf("Facil")
+    var categoriaSeleccionada by mutableStateOf("Todas")
 
     private var timer: CountDownTimer? = null
-    private val TIEMPO_TOTAL = 10000L // 10 segundos
+    private val TIEMPO_TOTAL = 10000L
 
-    // Inicializamos vacía, se llenará al iniciar juego
-    private var preguntasPartida: List<Pregunta> = emptyList()
+    fun setDificultad(dificultad: String) {
+        dificultadSeleccionada = dificultad
+    }
+
+    // --- NUEVO: Función simple para cambiar categoría ---
+    fun setCategoria(categoria: String) {
+        categoriaSeleccionada = categoria
+    }
+
 
     fun iniciarJuego() {
-        // CORRECCIÓN: Llamamos a la función que crea el mix de 30 preguntas (10 de cada)
-        cargarPreguntasAleatorias()
+        val todas = ProveedorPreguntas.obtenerPreguntas()
+
+        // --- FILTRO: Comprueba Dificultad Y Categoría ---
+        preguntasPartida = todas.filter { pregunta ->
+            val coincideDificultad = pregunta.dificultad == dificultadSeleccionada
+            // Si es "Todas", acepta cualquier cosa. Si no, debe coincidir la categoría.
+            val coincideCategoria = if (categoriaSeleccionada == "Todas") true else pregunta.categoria == categoriaSeleccionada
+
+            coincideDificultad && coincideCategoria
+        }.shuffled()
 
         if (preguntasPartida.isNotEmpty()) {
             puntuacion = 0
             indicePreguntaActual = 0
             juegoTerminado = false
             cargarPregunta()
+        } else {
+            // Si no hay preguntas de ese tipo, terminamos el juego inmediatamente
+            juegoTerminado = true
         }
     }
 
-    fun setDificultad(dificultad: String) {
-        dificultadSeleccionada = dificultad
-    }
-
-    // Esta función ahora es CRUCIAL: Genera la lista de 30 preguntas (10 Fáciles -> 10 Medias -> 10 Difíciles)
-    private fun cargarPreguntasAleatorias() {
-        val todas = ProveedorPreguntas.obtenerPreguntas()
-
-        // Tomamos menos preguntas de cada tipo para sumar 10 en total
-        val faciles = todas.filter { it.dificultad == "Facil" }.shuffled().take(4)
-        val medias = todas.filter { it.dificultad == "Medio" }.shuffled().take(3)
-        val dificiles = todas.filter { it.dificultad == "Dificil" }.shuffled().take(3)
-
-        // Total = 10 preguntas mezcladas por dificultad progresiva
-        preguntasPartida = faciles + medias + dificiles
-    }
-
     private fun cargarPregunta() {
-        // AÑADIDO: Verificamos que el índice sea menor que 10 Y menor que el tamaño de la lista
         if (indicePreguntaActual < 10 && indicePreguntaActual < preguntasPartida.size) {
             val p = preguntasPartida[indicePreguntaActual]
             preguntaActual = p
@@ -82,8 +78,7 @@ class GameViewModel : ViewModel() {
     }
 
     private fun avanzar() {
-        /*if (indicePreguntaActual > 9) juegoTerminado
-        else*/ indicePreguntaActual++
+        indicePreguntaActual++
         cargarPregunta()
     }
 
